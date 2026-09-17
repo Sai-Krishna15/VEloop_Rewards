@@ -1,0 +1,19 @@
+# ─── Environment / secrets ───────────────────────────────────────────────────
+**/.env
+# .env.example files ARE committed (they contain no secrets)
+
+# ─── Node ────────────────────────────────────────────────────────────────────
+**/node_modules/
+
+# ─── Build outputs ───────────────────────────────────────────────────────────
+frontend/dist/
+frontend/.vite/
+
+# ─── OS / editor ─────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+PROGRESS.md
+VELoop-Final-Architecture-and-Plan.md
