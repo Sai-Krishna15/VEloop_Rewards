@@ -2,8 +2,8 @@
 
 ## 1. User Model (`User.js`)
 Handles authentication and core user identity.
-- `username`: String (Unique)
-- `password`: String (Hashed)
+- `email`: String (Unique)
+- `passwordHash`: String (Hashed)
 
 ## 2. StreakCycle Model (`StreakCycle.js`)
 Tracks the current state of a user's 7-day streak.
@@ -27,7 +27,7 @@ Immutable ledger of all successful claims.
 ## 4. Wallet Model (`Wallet.js`)
 An extensible wallet holding various currency balances.
 - `userId`: ObjectId (Unique Index)
-- `balances`: Map (Key: String, Value: Number) - E.g. `{"VEs": 100, "Gems": 5}`
+- `balances`: Map (Key: String, Value: Number) - E.g. `{"VES": 100, "INR": 5}`
 
 ## 5. WalletTransaction Model (`WalletTransaction.js`)
 Double-entry ledger for wallet changes.

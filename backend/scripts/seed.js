@@ -18,10 +18,10 @@ const STREAK_REWARDS = [
   { day: 1, rewardType: 'VES', currency: 'VES', amount: 5,   title: 'Day 1 Reward',        assetType: 'coin',     active: true, metadata: { badge: 'Daily' } },
   { day: 2, rewardType: 'VES', currency: 'VES', amount: 10,  title: 'Day 2 Reward',        assetType: 'coin',     active: true, metadata: { badge: 'Daily' } },
   { day: 3, rewardType: 'VES', currency: 'VES', amount: 15,  title: 'Day 3 Reward',        assetType: 'coin',     active: true, metadata: { badge: 'Daily' } },
-  { day: 4, rewardType: 'VES', currency: 'VES', amount: 25,  title: 'Day 4 Special Gift',  assetType: 'gift-box', active: true, metadata: { badge: 'Special' } },
-  { day: 5, rewardType: 'VES', currency: 'VES', amount: 30,  title: 'Day 5 Reward',        assetType: 'coin',     active: true, metadata: { badge: 'Daily' } },
-  { day: 6, rewardType: 'VES', currency: 'VES', amount: 40,  title: 'Day 6 Reward',        assetType: 'coin',     active: true, metadata: { badge: 'Daily' } },
-  { day: 7, rewardType: 'VES', currency: 'VES', amount: 100, title: 'Day 7 Ultimate Reward', assetType: 'crown',  active: true, metadata: { badge: 'Ultimate' } },
+  { day: 4, rewardType: 'Amazon Gift Card', currency: 'INR', amount: 1,  title: 'Day 4 Special Gift',  assetType: 'gift-box', active: true, metadata: { badge: 'Special' } },
+  { day: 5, rewardType: 'Amazon Gift Card', currency: 'INR', amount: 2,  title: 'Day 5 Reward',        assetType: 'gift-card', active: true, metadata: { badge: 'Daily' } },
+  { day: 6, rewardType: 'VES', currency: 'VES', amount: 30,  title: 'Day 6 Reward',        assetType: 'coin',     active: true, metadata: { badge: 'Daily' } },
+  { day: 7, rewardType: 'Amazon Gift Card', currency: 'INR', amount: 5, title: 'Day 7 Ultimate Reward', assetType: 'crown',  active: true, metadata: { badge: 'Ultimate' } },
 ];
 
 const STREAK_CONFIG = {

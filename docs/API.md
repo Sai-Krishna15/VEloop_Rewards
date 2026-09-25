@@ -14,7 +14,7 @@ Creates a new user and provisions an empty wallet.
 **Body:**
 ```json
 {
-  "username": "user1",
+  "email": "user1@example.com",
   "password": "password123"
 }
 ```
@@ -24,7 +24,7 @@ Authenticates a user and returns a JWT.
 **Body:**
 ```json
 {
-  "username": "user1",
+  "email": "user1@example.com",
   "password": "password123"
 }
 ```
@@ -63,7 +63,8 @@ Retrieves the user's current streak state, wallet balance, and the 7-day reward 
     { "day": 3, "status": "LOCKED", "reward": { "type": "VEs", "amount": 30 } }
   ],
   "wallet": {
-    "vesBalance": 10
+    "vesBalance": 10,
+    "inrBalance": 5
   }
 }
 ```

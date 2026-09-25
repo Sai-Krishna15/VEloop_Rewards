@@ -25,7 +25,7 @@ npm install
 Create a `.env` file in the `backend/` directory:
 ```env
 PORT=3000
-MONGODB_URI=mongodb://localhost:27017/VEloop
+MONGODB_URI=Your_uri
 JWT_SECRET=your_super_secret_jwt_key
 NODE_ENV=development
 ```

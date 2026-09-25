@@ -32,11 +32,12 @@ async function getStreakStatus(userId) {
 
   const rewards   = await _buildRewardsArray(userId, cycle);
   const vesBalance = await walletService.getBalance(userId, 'VES');
+  const inrBalance = await walletService.getBalance(userId, 'INR');
 
   return {
     streak: _buildStreakPayload(cycle),
     rewards,
-    wallet: { vesBalance },
+    wallet: { vesBalance, inrBalance },
   };
 }
 
@@ -84,12 +85,13 @@ async function claimReward(userId, dayHint) {
     // Return immediately so client shows the reset state
     const rewards    = await _buildRewardsArray(userId, cycle);
     const vesBalance = await walletService.getBalance(userId, 'VES');
+    const inrBalance = await walletService.getBalance(userId, 'INR');
     return {
       status:  'JUST_RESET',
       message: 'Your streak has been reset. Start again from Day 1.',
       streak:  _buildStreakPayload(cycle),
       rewards,
-      wallet:  { vesBalance },
+      wallet:  { vesBalance, inrBalance },
     };
   }
 
@@ -265,12 +267,13 @@ async function claimReward(userId, dayHint) {
   const freshCycle  = await _getOrCreateActiveCycle(userId, config);
   const rewards     = await _buildRewardsArray(userId, freshCycle);
   const vesBalance  = await walletService.getBalance(userId, 'VES');
+  const inrBalance  = await walletService.getBalance(userId, 'INR');
 
   return {
     status:  'CLAIMED',
     streak:  _buildStreakPayload(freshCycle),
     rewards,
-    wallet:  { vesBalance },
+    wallet:  { vesBalance, inrBalance },
     claimed: {
       day:           eligibleDay,
       currency:      rewardConfig.currency,

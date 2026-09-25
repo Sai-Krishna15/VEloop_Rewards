@@ -2,9 +2,9 @@
 // Central home for enum values and configuration constants referenced by
 // multiple parts of the system. Never duplicate these inline.
 
-const CURRENCIES = Object.freeze(['VES', 'SVES', 'GEMS', 'TOKENS', 'SPINS']);
+const CURRENCIES = Object.freeze(['VES', 'SVES', 'GEMS', 'TOKENS', 'SPINS', 'INR']);
 
-const REWARD_TYPES = Object.freeze(['VES', 'GIFT_CARD']);
+const REWARD_TYPES = Object.freeze(['VES', 'GIFT_CARD', 'Amazon Gift Card']);
 
 const ASSET_TYPES = Object.freeze(['coin', 'gift-box', 'crown']);
 

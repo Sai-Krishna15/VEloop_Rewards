@@ -55,6 +55,7 @@
 .walletBadge {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
   background: rgba(255, 255, 255, 0.1);
   padding: 0.4rem 0.8rem;
@@ -555,7 +556,80 @@
 }
 
 /* Responsive Media Queries */
-@media (max-width: 768px) {
+
+@media (max-width: 350px) {
+  .heroBanner {
+    padding: 1.5rem 1rem;
+    flex-direction: column;
+  }
+  .heroTextContent {
+    max-width: 100%;
+  }
+  .heroLeftImg, .heroRightImg {
+    display: none; /* Hide side assets on mobile, rely on smaller padding */
+  }
+
+  .statsContainer {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+
+  .ultimateRewardCard {
+    flex-direction: column;
+    text-align: center;
+    gap: 1rem;
+    padding: 1.5rem;
+  }
+  .ultimateCenter {
+    padding-left: 0;
+  }
+
+  .grid {
+    grid-template-columns: repeat(1, 1fr);
+    gap: 0.5rem;
+  }
+  .rewardCard {
+    padding: 0.5rem 0.2rem;
+  }
+  .rewardImg {
+    height: 40px;
+  }
+  .rewardTitle {
+    font-size: 0.65rem;
+  }
+  .rewardAmount {
+    font-size: 1rem;
+  }
+  .rewardSubtitle {
+    font-size: 0.6rem;
+  }
+
+  .benefitsGrid {
+    grid-template-columns: repeat(1, 1fr);
+  }
+
+  .header {
+    flex-wrap: wrap;
+    gap: 0.3rem;
+  }
+  .headerTitleContainer {
+    flex: 1;
+    justify-content: center;
+  }
+  .headerTitle {
+    font-size: 1.1rem;
+    white-space: nowrap;
+  }
+  .walletBadge {
+    padding: 0.2rem 0.4rem;
+    font-size: 0.8rem;
+  }
+  .backBtn {
+    padding: 0.3rem 0.4rem;
+  }
+}
+
+@media (min-width: 351px) and (max-width: 768px) {
   .heroBanner {
     padding: 1.5rem 1rem;
     flex-direction: column;
@@ -584,12 +658,50 @@
 
   .grid {
     grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+  }
+  .rewardCard {
+    padding: 0.5rem 0.2rem;
+  }
+  .rewardImg {
+    height: 40px;
+  }
+  .rewardTitle {
+    font-size: 0.65rem;
+  }
+  .rewardAmount {
+    font-size: 1rem;
+  }
+  .rewardSubtitle {
+    font-size: 0.6rem;
   }
 
   .benefitsGrid {
     grid-template-columns: repeat(2, 1fr);
   }
+
+  .header {
+    flex-wrap: wrap;
+    gap: 0.3rem;
+  }
+  .headerTitleContainer {
+    flex: 1;
+    justify-content: center;
+  }
+  .headerTitle {
+    font-size: 1.1rem;
+    white-space: nowrap;
+  }
+  .walletBadge {
+    padding: 0.2rem 0.4rem;
+    font-size: 0.8rem;
+  }
+  .backBtn {
+    padding: 0.3rem 0.4rem;
+  }
 }
+
+
 
 @media (max-width: 1024px) and (min-width: 769px) {
   .grid {
