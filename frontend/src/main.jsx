@@ -5,14 +5,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 
-function App() {
-  return (
-    <div style={{ fontFamily: 'sans-serif', padding: '2rem', color: '#fff', background: '#1a1a2e', minHeight: '100vh' }}>
-      <h1>VELoop Daily Streak</h1>
-      <p>Phase 0 scaffold — frontend not yet wired (Phase 3).</p>
-    </div>
-  );
-}
+import App from './App';
+import './index.css';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>

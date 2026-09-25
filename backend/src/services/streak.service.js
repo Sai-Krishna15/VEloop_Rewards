@@ -135,104 +135,122 @@ async function claimReward(userId, dayHint) {
   }
 
   // ── Step 9: MongoDB transaction ──────────────────────────────────────────
-  const session = await mongoose.startSession();
   let claimDoc;
   let txResult;
 
-  try {
-    await session.withTransaction(async () => {
-      // 9a: Insert StreakClaim — unique index rejects concurrent dupes
-      const transactionId = walletService.generateTransactionId('STREAK');
+  const performOperations = async (sessionOpt) => {
+    // 9a: Insert StreakClaim — unique index rejects concurrent dupes
+    const transactionId = walletService.generateTransactionId('STREAK');
 
-      [claimDoc] = await StreakClaim.create(
+    [claimDoc] = await StreakClaim.create(
+      [
+        {
+          userId,
+          cycleId:       cycle._id,
+          day:           eligibleDay,
+          rewardId:      rewardConfig._id,
+          status:        'SUCCESS',
+          claimedAt:     now,
+          transactionId,
+        },
+      ],
+      { session: sessionOpt }
+    );
+
+    // 9b: creditWallet (idempotent, writes WalletTransaction + AuditLog internally)
+    txResult = await walletService.creditWallet(
+      userId,
+      rewardConfig.currency,
+      rewardConfig.amount,
+      'DAILY_STREAK',
+      claimDoc._id.toString(),
+      sessionOpt,
+      eligibleDay
+    );
+
+    // 9c: Advance cycle
+    const isLastDay    = eligibleDay === config.cycleLengthDays;
+    const nextClaimAt  = new Date(now.getTime() + config.claimIntervalHours * 60 * 60 * 1000);
+
+    if (isLastDay) {
+      // Mark current cycle COMPLETED
+      await StreakCycle.updateOne(
+        { _id: cycle._id },
+        { $set: { status: 'COMPLETED', lastClaimAt: now, nextClaimAt } },
+        { session: sessionOpt }
+      );
+
+      // Create new cycle at Day 1 immediately (no cooldown — architecture decision)
+      const prevCycleNumber = cycle.cycleNumber || 1;
+      await StreakCycle.create(
         [
           {
             userId,
-            cycleId:       cycle._id,
+            cycleNumber: prevCycleNumber + 1,
+            status:      'ACTIVE',
+            startedAt:   now,
+            currentDay:  1,
+            lastClaimAt: null,
+            nextClaimAt: null, // Day 1 has no time gate
+          },
+        ],
+        { session: sessionOpt }
+      );
+    } else {
+      // Advance currentDay and set nextClaimAt
+      await StreakCycle.updateOne(
+        { _id: cycle._id },
+        {
+          $set: {
+            currentDay:  eligibleDay + 1,
+            lastClaimAt: now,
+            nextClaimAt,
+          },
+        },
+        { session: sessionOpt }
+      );
+    }
+
+    // 9d: AuditLog success
+    await AuditLog.create(
+      [
+        {
+          userId,
+          eventType: 'STREAK_CLAIM_SUCCESS',
+          detail: {
             day:           eligibleDay,
+            cycleId:       cycle._id,
             rewardId:      rewardConfig._id,
-            status:        'SUCCESS',
-            claimedAt:     now,
-            transactionId,
+            currency:      rewardConfig.currency,
+            amount:        rewardConfig.amount,
+            transactionId: txResult.transactionId,
+            balanceAfter:  txResult.balanceAfter,
           },
-        ],
-        { session }
-      );
+        },
+      ],
+      { session: sessionOpt }
+    );
+  };
 
-      // 9b: creditWallet (idempotent, writes WalletTransaction + AuditLog internally)
-      txResult = await walletService.creditWallet(
-        userId,
-        rewardConfig.currency,
-        rewardConfig.amount,
-        'DAILY_STREAK',
-        claimDoc._id.toString(),
-        session,
-        eligibleDay
-      );
-
-      // 9c: Advance cycle
-      const isLastDay    = eligibleDay === config.cycleLengthDays;
-      const nextClaimAt  = new Date(now.getTime() + config.claimIntervalHours * 60 * 60 * 1000);
-
-      if (isLastDay) {
-        // Mark current cycle COMPLETED
-        await StreakCycle.updateOne(
-          { _id: cycle._id },
-          { $set: { status: 'COMPLETED', lastClaimAt: now, nextClaimAt } },
-          { session }
-        );
-
-        // Create new cycle at Day 1 immediately (no cooldown — architecture decision)
-        const prevCycleNumber = cycle.cycleNumber || 1;
-        await StreakCycle.create(
-          [
-            {
-              userId,
-              cycleNumber: prevCycleNumber + 1,
-              status:      'ACTIVE',
-              startedAt:   now,
-              currentDay:  1,
-              lastClaimAt: null,
-              nextClaimAt: null, // Day 1 has no time gate
-            },
-          ],
-          { session }
-        );
-      } else {
-        // Advance currentDay and set nextClaimAt
-        await StreakCycle.updateOne(
-          { _id: cycle._id },
-          {
-            $set: {
-              currentDay:  eligibleDay + 1,
-              lastClaimAt: now,
-              nextClaimAt,
-            },
-          },
-          { session }
-        );
+  try {
+    // Attempt transaction if the deployment supports it
+    // A standalone MongoDB has topology type 'Single'. Replica sets have 'ReplicaSetWithPrimary'
+    const topologyType = mongoose.connection.client.topology?.s?.description?.type || 'Unknown';
+    const isReplicaSet = topologyType !== 'Single' && topologyType !== 'Unknown';
+    
+    if (isReplicaSet) {
+      const session = await mongoose.startSession();
+      try {
+        await session.withTransaction(async () => {
+          await performOperations(session);
+        });
+      } finally {
+        await session.endSession();
       }
-
-      // 9d: AuditLog success
-      await AuditLog.create(
-        [
-          {
-            userId,
-            eventType: 'STREAK_CLAIM_SUCCESS',
-            detail: {
-              day:           eligibleDay,
-              cycleId:       cycle._id,
-              rewardId:      rewardConfig._id,
-              currency:      rewardConfig.currency,
-              amount:        rewardConfig.amount,
-              transactionId: txResult.transactionId,
-              balanceAfter:  txResult.balanceAfter,
-            },
-          },
-        ],
-        { session }
-      );
-    });
+    } else {
+      // Fallback for local standalone MongoDB (e.g. dev environment without replica set)
+      await performOperations(undefined);
+    }
   } catch (err) {
     // Duplicate key from unique index = concurrent claim — map to 409
     if (err.code === 11000) {
@@ -241,8 +259,6 @@ async function claimReward(userId, dayHint) {
       throw dupErr;
     }
     throw err;
-  } finally {
-    await session.endSession();
   }
 
   // ── Step 10: Return fresh state (re-fetch after transaction commits) ──────

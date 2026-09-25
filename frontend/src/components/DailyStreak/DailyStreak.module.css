@@ -1,0 +1,264 @@
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Header */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+}
+
+.backBtn {
+  background: none;
+  border: none;
+  color: var(--color-text-muted);
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+}
+
+.walletBadge {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 0.5rem 1rem;
+  border-radius: var(--ui-radius-lg);
+  font-weight: 600;
+  border: 1px solid var(--ui-glass-border);
+}
+
+.gemIcon {
+  color: var(--color-primary);
+  font-size: 1.2rem;
+}
+
+/* Hero Banner */
+.heroBanner {
+  text-align: center;
+  padding: 2rem 1rem;
+  border-radius: var(--ui-radius);
+  background: linear-gradient(135deg, rgba(138, 43, 226, 0.2) 0%, rgba(26, 17, 44, 0.8) 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.heroBanner::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(138, 43, 226, 0.15) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.heroTitle {
+  font-size: 2rem;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+  background: linear-gradient(90deg, #fff, var(--color-accent));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.heroSubtitle {
+  color: var(--color-text-muted);
+  font-size: 1rem;
+  margin: 0;
+}
+
+/* Stats */
+.statsContainer {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.statCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem;
+  text-align: center;
+}
+
+.statValue {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-text-main);
+  margin-bottom: 0.25rem;
+}
+
+.statLabel {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  letter-spacing: 0.05em;
+}
+
+/* Reward Grid */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 1rem;
+}
+
+.rewardCard {
+  position: relative;
+  padding: 1rem 0.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  transition: transform 0.2s allow-discrete, box-shadow 0.2s;
+  cursor: pointer;
+  border-radius: var(--ui-radius);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.rewardCard:hover:not(.locked) {
+  transform: translateY(-4px);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.rewardCard.claimed {
+  opacity: 0.6;
+  background: transparent;
+  border-color: rgba(255, 255, 255, 0.02);
+}
+
+.rewardCard.today {
+  background: linear-gradient(180deg, rgba(138, 43, 226, 0.3) 0%, rgba(26, 17, 44, 0.8) 100%);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 15px rgba(138, 43, 226, 0.4);
+}
+
+.rewardCard.locked {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.dayLabel {
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: var(--color-text-muted);
+}
+
+.today .dayLabel {
+  color: var(--color-accent);
+}
+
+.rewardIcon {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+  filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
+}
+
+.rewardAmount {
+  font-weight: 700;
+  font-size: 1.125rem;
+}
+
+.checkmark {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  color: var(--color-success);
+  font-size: 1.25rem;
+  background: #000;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Skeleton */
+.skeletonCard {
+  height: 120px;
+  background: linear-gradient(90deg, rgba(255,255,255,0.05) 25%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.05) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite linear;
+  border-radius: var(--ui-radius);
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Animations */
+@keyframes pulseReady {
+  0% { box-shadow: 0 0 0 0 rgba(138, 43, 226, 0.4); }
+  70% { box-shadow: 0 0 0 10px rgba(138, 43, 226, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(138, 43, 226, 0); }
+}
+
+.today {
+  animation: pulseReady 2s infinite;
+}
+
+@keyframes modalFadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.modalContent {
+  animation: modalFadeIn 0.3s ease-out forwards;
+}
+
+/* Responsive Media Queries */
+@media (max-width: 768px) {
+  .heroBanner {
+    padding: 1.5rem 1rem;
+  }
+  .heroTitle {
+    font-size: 1.5rem;
+  }
+  .statsContainer {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+  .statCard {
+    border-left: none !important;
+    border-right: none !important;
+    border-bottom: 1px solid var(--ui-glass-border);
+    padding: 0.75rem;
+  }
+  .statCard:last-child {
+    border-bottom: none;
+  }
+  .grid {
+    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+    gap: 0.5rem;
+  }
+  .rewardIcon {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 1024px) and (min-width: 769px) {
+  .statsContainer {
+    gap: 0.5rem;
+  }
+  .statCard {
+    padding: 0.75rem;
+  }
+}
