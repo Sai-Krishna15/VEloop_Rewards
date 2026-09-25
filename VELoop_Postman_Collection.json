@@ -1,0 +1,166 @@
+{
+  "info": {
+    "name": "VELoop Daily Streak API",
+    "description": "Postman collection covering positive and negative test cases for the Daily Streak & Rewards system.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. Authentication",
+      "item": [
+        {
+          "name": "Register User",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"testuser1\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "register"]
+            }
+          }
+        },
+        {
+          "name": "Login User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.token) {",
+                  "    pm.environment.set(\"jwt_token\", jsonData.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"testuser1\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Daily Streak",
+      "item": [
+        {
+          "name": "Get Current State",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/daily-streak",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "daily-streak"]
+            }
+          }
+        },
+        {
+          "name": "Claim Reward (Positive)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"day\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/daily-streak/claim",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "daily-streak", "claim"]
+            }
+          }
+        },
+        {
+          "name": "Claim Reward (Negative - Too Early)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"day\": 2\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/daily-streak/claim",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "daily-streak", "claim"]
+            }
+          }
+        },
+        {
+          "name": "Claim Reward (Negative - Wrong Day)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"day\": 5\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/daily-streak/claim",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "daily-streak", "claim"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Admin/Testing",
+      "item": [
+        {
+          "name": "Reset Streak",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/daily-streak/reset",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "daily-streak", "reset"]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000",
+      "type": "string"
+    }
+  ]
+}

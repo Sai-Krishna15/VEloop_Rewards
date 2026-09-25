@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Lock, CheckCircle } from 'lucide-react';
 import styles from './DailyStreak.module.css';
 import ClaimModal from './ClaimModal';
 
@@ -21,12 +22,12 @@ export default function RewardGrid({ rewards, streak, serverTime, onStateRefresh
     onStateRefresh(newState);
   };
 
-  const getIcon = (type) => {
-    switch (type) {
-      case 'GIFT_CARD': return '🎁';
-      case 'crown': return '👑';
-      case 'gift-box': return '📦';
-      default: return '💎';
+  const getIcon = (day) => {
+    switch (day) {
+      case 4: return <img src="/assets/Day-4.png" alt="Gift" className={`${styles.rewardImg} ${styles.softFloat}`} />;
+      case 5: return <img src="/assets/Day-5.png" alt="Amazon Gift Card" className={styles.rewardImg} />;
+      case 7: return <img src="/assets/Day-7.png" alt="Crown" className={`${styles.rewardImg} ${styles.gentleShine}`} />;
+      default: return <img src="/assets/VEs_Coin.png" alt="Coins" className={styles.rewardImg} />;
     }
   };
 
@@ -57,14 +58,32 @@ export default function RewardGrid({ rewards, streak, serverTime, onStateRefresh
               tabIndex={isToday && isReady ? 0 : undefined}
             >
               {isClaimed && (
-                <div className={styles.checkmark}>✓</div>
+                <div className={styles.checkmark}>
+                  <CheckCircle size={16} color="#fff" fill="var(--color-success)" />
+                </div>
+              )}
+              {isToday && isReady && (
+                <div className={styles.todayBadge}>Today</div>
               )}
               <div className={styles.dayLabel}>Day {r.day}</div>
-              <div className={styles.rewardIcon}>
-                {getIcon(r.reward.assetType || r.reward.type)}
+              <div className={styles.rewardIconWrapper}>
+                {getIcon(r.day)}
               </div>
-              <div className={styles.rewardAmount}>
-                {r.reward.amount > 0 ? `+${r.reward.amount}` : ''}
+              <div className={styles.rewardTitle}>
+                Daily Reward
+              </div>
+              <div className={styles.rewardAmount} style={{ color: r.day >= 4 ? 'var(--color-accent)' : 'var(--color-success)' }}>
+                {r.reward.amount > 0 ? (r.reward.type === 'Amazon Gift Card' ? `₹${r.reward.amount}` : `+${r.reward.amount}`) : ''}
+              </div>
+              <div className={styles.rewardSubtitle}>
+                {r.reward.type === 'Amazon Gift Card' ? 'Amazon Gift Card' : `${r.reward.amount} VEs`}
+              </div>
+              
+              <div className={styles.claimStateArea}>
+                {isClaimed && <span className={styles.stateSuccess}><CheckCircle size={14}/> Claimed</span>}
+                {isLocked && <span className={styles.stateLocked}><Lock size={14}/> Locked</span>}
+                {isToday && !isReady && <span className={styles.stateLocked}><Lock size={14}/> Locked</span>}
+                {isToday && isReady && <button className={styles.claimNowBtn}>Claim Now &gt;</button>}
               </div>
             </div>
           );

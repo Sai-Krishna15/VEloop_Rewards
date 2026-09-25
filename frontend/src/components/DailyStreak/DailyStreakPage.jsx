@@ -6,8 +6,11 @@ import styles from './DailyStreak.module.css';
 import StreakHeader from './StreakHeader';
 import HeroBanner from './HeroBanner';
 import StreakStats from './StreakStats';
+import UltimateReward from './UltimateReward';
 import RewardGrid from './RewardGrid';
 import StreakSkeleton from './StreakSkeleton';
+import WhyStreak from './WhyStreak';
+import TrustFooter from './TrustFooter';
 
 export default function DailyStreakPage({ onLogout }) {
   const [loading, setLoading] = useState(true);
@@ -59,13 +62,16 @@ export default function DailyStreakPage({ onLogout }) {
         <StreakHeader wallet={data.wallet} onLogout={onLogout} />
         <HeroBanner />
         <StreakStats streak={data.streak} />
+        <UltimateReward streak={data.streak} />
         <RewardGrid 
           rewards={data.rewards} 
           streak={data.streak} 
           serverTime={data.serverTime} 
           onStateRefresh={setData} 
         />
+        <WhyStreak />
       </div>
+      <TrustFooter />
     </div>
   );
 }
