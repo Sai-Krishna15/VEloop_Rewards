@@ -48,6 +48,18 @@ Run the frontend:
 npm run dev
 ```
 
+## Deployment (Render)
+
+This repository is fully configured for a single-click monorepo deployment on **Render.com** using the provided `render.yaml` blueprint.
+
+1. **Push to GitHub**: Push this repository to your GitHub account.
+2. **Connect to Render**: In the Render Dashboard, create a new **Blueprint Instance** and connect your repository.
+3. **Database URL**: Render will automatically prompt you to securely provide the `MONGO_URI` environment variable in the dashboard dashboard.
+4. **Deploy**: Render will automatically detect the `render.yaml` file and spin up:
+   - A Node.js Web Service for the backend.
+   - A Vite Static Site for the React frontend.
+   - It handles all routing, environment variable injections, and build steps automatically!
+
 ## Documentation
 - [API Documentation](./docs/API.md)
 - [Database Schema](./docs/DATABASE.md)

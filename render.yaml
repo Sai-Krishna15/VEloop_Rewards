@@ -1,0 +1,38 @@
+services:
+  # ------------------------------------------------------------
+  # Backend: Node.js Express API
+  # ------------------------------------------------------------
+  - type: web
+    name: veloop-api
+    env: node
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: PORT
+        value: 10000
+      - key: NODE_ENV
+        value: production
+      - key: MONGO_URI
+        sync: false # You must set this manually in the Render Dashboard
+      - key: JWT_SECRET
+        generateValue: true # Generates a secure random secret automatically
+      - key: ALLOWED_ORIGINS
+        value: "https://veloop-frontend.onrender.com" # Will need to match the frontend URL
+
+  # ------------------------------------------------------------
+  # Frontend: React Vite Static Site
+  # ------------------------------------------------------------
+  - type: web
+    name: veloop-frontend
+    env: static
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    envVars:
+      - key: VITE_API_BASE_URL
+        value: "https://veloop-api.onrender.com/api" # Points to the backend service
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
