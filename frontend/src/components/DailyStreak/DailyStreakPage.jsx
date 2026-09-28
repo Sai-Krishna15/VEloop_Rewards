@@ -1,26 +1,25 @@
 import React, { useEffect, useState } from 'react';
-import { getStreak, register, login } from '../../services/streakApi';
+import { getStreak } from '../../services/streakApi';
 import styles from './DailyStreak.module.css';
+import ParticleCanvas from '../ParticleCanvas';
 
-// Subcomponents (we will create these next)
-import StreakHeader from './StreakHeader';
-import HeroBanner from './HeroBanner';
-import StreakStats from './StreakStats';
-import UltimateReward from './UltimateReward';
-import RewardGrid from './RewardGrid';
-import StreakSkeleton from './StreakSkeleton';
-import WhyStreak from './WhyStreak';
-import TrustFooter from './TrustFooter';
+import StreakHeader    from './StreakHeader';
+import HeroBanner      from './HeroBanner';
+import StreakStats     from './StreakStats';
+import UltimateReward  from './UltimateReward';
+import RewardGrid      from './RewardGrid';
+import StreakSkeleton  from './StreakSkeleton';
+import WhyStreak       from './WhyStreak';
+import TrustFooter     from './TrustFooter';
 
 export default function DailyStreakPage({ onLogout }) {
   const [loading, setLoading] = useState(true);
-  const [data, setData] = useState(null);
-  const [error, setError] = useState(null);
+  const [data,    setData]    = useState(null);
+  const [error,   setError]   = useState(null);
 
   useEffect(() => {
     async function init() {
       try {
-        // Fetch streak state directly, token is handled by App
         const state = await getStreak();
         setData(state);
       } catch (err) {
@@ -34,44 +33,52 @@ export default function DailyStreakPage({ onLogout }) {
         setLoading(false);
       }
     }
-
     init();
   }, [onLogout]);
 
   if (loading) {
     return (
-      <div className={styles.container}>
-        <StreakSkeleton />
-      </div>
+      <>
+        <ParticleCanvas count={40} />
+        <div className={styles.container} style={{ position: 'relative', zIndex: 1 }}>
+          <StreakSkeleton />
+        </div>
+      </>
     );
   }
 
   if (error) {
     return (
-      <div className={styles.container}>
-        <div className="alert alert-danger" role="alert">
-          {error}
+      <>
+        <ParticleCanvas count={40} />
+        <div className={styles.container} style={{ position: 'relative', zIndex: 1 }}>
+          <div className="alert alert-danger" role="alert">{error}</div>
         </div>
-      </div>
+      </>
     );
   }
 
   return (
-    <div className={styles.container}>
-      <div className={styles.content}>
-        <StreakHeader wallet={data.wallet} onLogout={onLogout} />
-        <HeroBanner />
-        <StreakStats streak={data.streak} />
-        <UltimateReward streak={data.streak} />
-        <RewardGrid 
-          rewards={data.rewards} 
-          streak={data.streak} 
-          serverTime={data.serverTime} 
-          onStateRefresh={setData} 
-        />
-        <WhyStreak />
+    <>
+      {/* Ambient particles float behind everything */}
+      <ParticleCanvas count={45} />
+
+      <div className={styles.container} style={{ position: 'relative', zIndex: 1 }}>
+        <div className={styles.content}>
+          <StreakHeader wallet={data.wallet} onLogout={onLogout} />
+          <HeroBanner />
+          <StreakStats streak={data.streak} />
+          <UltimateReward streak={data.streak} />
+          <RewardGrid
+            rewards={data.rewards}
+            streak={data.streak}
+            serverTime={data.serverTime}
+            onStateRefresh={setData}
+          />
+          <WhyStreak />
+        </div>
+        <TrustFooter />
       </div>
-      <TrustFooter />
-    </div>
+    </>
   );
 }

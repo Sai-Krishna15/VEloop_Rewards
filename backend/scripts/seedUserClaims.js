@@ -20,11 +20,11 @@ async function seedUserClaims() {
   const rand = Math.floor(Math.random() * 10000);
   const username = `demoUser${rand}`;
   let user = await User.findOne({ username });
-  
+
   if (!user) {
-    user = await User.create({ 
-      username, 
-      email: `demo${rand}@example.com`, 
+    user = await User.create({
+      username,
+      email: `demo${rand}@example.com`,
       passwordHash: 'password123' // The pre-save hook in User model will hash this automatically!
     });
     console.log(`Created user: ${username} (password: password123)`);
@@ -41,11 +41,11 @@ async function seedUserClaims() {
   const cycle = await StreakCycle.create({
     userId: user._id,
     cycleNumber: 1,
-    status: 'COMPLETED',
-    startedAt: now,
-    currentDay: 7, // All 7 days claimed
-    lastClaimAt: now,
-    nextClaimAt: new Date(now.getTime() + 24 * 60 * 60 * 1000)
+    status: 'ACTIVE',
+    startedAt: new Date(now.getTime() - 6 * 24 * 60 * 60 * 1000),
+    currentDay: 7, // Ready to claim Day 7
+    lastClaimAt: new Date(now.getTime() - 24 * 60 * 60 * 1000),
+    nextClaimAt: new Date(now.getTime() - 1000)
   });
 
   console.log('Created Streak Cycle.');
@@ -56,6 +56,8 @@ async function seedUserClaims() {
   let totalINR = 0;
 
   for (const reward of rewards) {
+    if (reward.day >= 7) continue; // Leave Day 7 unclaimed
+
     await StreakClaim.create({
       userId: user._id,
       cycleId: cycle._id,

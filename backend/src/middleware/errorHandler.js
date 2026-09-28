@@ -13,11 +13,20 @@ function errorHandler(err, req, res, _next) {
     return res.status(err.status).json({ success: false, message: err.message });
   }
 
-  // Mongoose duplicate key (e.g. duplicate claim hitting the unique index)
+  // Mongoose duplicate key (e.g. duplicate claim hitting the unique index, or duplicate user email)
   if (err.code === 11000) {
+    let message = 'This reward has already been claimed.';
+    
+    // Check if the duplicate key was the email or username (during registration)
+    if (err.keyPattern && err.keyPattern.email) {
+      message = 'An account with this email already exists.';
+    } else if (err.keyPattern && err.keyPattern.username) {
+      message = 'This username is already taken.';
+    }
+
     return res.status(409).json({
       success: false,
-      message: 'This reward has already been claimed.',
+      message: message,
     });
   }
 

@@ -182,7 +182,7 @@ async function claimReward(userId, dayHint) {
         { session: sessionOpt }
       );
 
-      // Create new cycle at Day 1 immediately (no cooldown — architecture decision)
+      // Create new cycle at Day 1 with a 24h cooldown from the Day 7 claim
       const prevCycleNumber = cycle.cycleNumber || 1;
       await StreakCycle.create(
         [
@@ -193,7 +193,7 @@ async function claimReward(userId, dayHint) {
             startedAt:   now,
             currentDay:  1,
             lastClaimAt: null,
-            nextClaimAt: null, // Day 1 has no time gate
+            nextClaimAt: nextClaimAt, // Apply the 24h cooldown
           },
         ],
         { session: sessionOpt }
